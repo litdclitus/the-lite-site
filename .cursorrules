@@ -1,0 +1,151 @@
+# Cursor Rules for the-lit-site
+
+## Project Overview
+This is a **Spotlight** template from Tailwind Plus - a personal portfolio/blog site built with Next.js 14, TypeScript, and Tailwind CSS v4.
+
+**IMPORTANT**: Always reference `CLAUDE.md` for complete project documentation and development guidelines.
+
+## Development Commands
+- `npm install` - Install dependencies
+- `npm run dev` - Start development server (http://localhost:3000)
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Environment Setup
+Required `.env.local` file in root:
+```
+NEXT_PUBLIC_SITE_URL=https://example.com
+```
+
+## Architecture Overview
+
+### Tech Stack
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Content**: MDX with frontmatter
+- **Dark Mode**: next-themes
+- **Path Alias**: `@/*` maps to `src/*`
+
+### Directory Structure
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── blog/[slug]/       # Blog post MDX files
+│   ├── feed.xml/          # RSS feed route
+│   └── layout.tsx         # Root layout
+├── components/            # Reusable UI components
+├── lib/                   # Utility functions
+│   ├── posts.ts          # Blog post discovery & metadata
+│   └── formatDate.ts     # Date formatting
+├── styles/               # Global styles
+└── images/               # Static images
+
+public/
+└── images/
+    └── blog/[slug]/      # Blog post images
+```
+
+## Key Patterns & Rules
+
+### Blog Posts
+1. **Location**: `src/app/blog/[slug]/page.mdx`
+2. **Required Export**: Every post must export an `article` object:
+   ```typescript
+   export const article = {
+     title: 'Post Title',
+     description: 'Post description',
+     author: 'Author Name',
+     date: 'YYYY-MM-DD'
+   }
+   ```
+3. **Images**: Place in `public/images/blog/[slug]/`
+4. **Content**: Written in MDX with full React component support
+
+### Component Guidelines
+- **Location**: All components in `src/components/`
+- **Styling**: Use Tailwind CSS classes with dark mode variants
+- **Composition**: Components compose together (Layout > Header/Footer, PostLayout > Container > Prose)
+- **TypeScript**: Always use proper TypeScript types
+
+### Content Management
+- **Discovery**: `src/lib/posts.ts` uses `fast-glob` to find all `*/page.mdx` files
+- **RSS Feed**: Generated at `/feed.xml` using `feed` library
+- **Metadata**: Extracted from `article` export in each MDX file
+
+### MDX Configuration
+- **Remark**: GitHub Flavored Markdown (`remark-gfm`)
+- **Rehype**: Syntax highlighting (`@mapbox/rehype-prism`)
+- **Styles**: Custom Prism styles in `src/styles/prism.css`
+- **Config**: `next.config.mjs` for MDX setup
+
+## Code Style Preferences
+
+### TypeScript
+- Use explicit types for function parameters and return values
+- Prefer interfaces over types for object shapes
+- Use proper Next.js types (Metadata, Route handlers, etc.)
+
+### React/Next.js
+- Use Server Components by default
+- Add 'use client' only when necessary (interactivity, hooks, browser APIs)
+- Prefer async/await for data fetching
+- Use Next.js Image component for images
+
+### Styling
+- Use Tailwind utility classes
+- Include dark mode variants: `dark:*`
+- Follow existing component patterns
+- Maintain responsive design: `sm:`, `md:`, `lg:` breakpoints
+
+### File Naming
+- Components: PascalCase (e.g., `Button.tsx`)
+- Utilities: camelCase (e.g., `formatDate.ts`)
+- Pages: kebab-case folders with `page.tsx` or `page.mdx`
+
+## Common Tasks
+
+### Adding a New Blog Post
+1. Create folder: `src/app/blog/[new-slug]/`
+2. Create file: `page.mdx` with required `article` export
+3. Add images to: `public/images/blog/[new-slug]/`
+4. Content renders automatically via `posts.ts`
+
+### Adding a New Component
+1. Create in `src/components/[ComponentName].tsx`
+2. Use TypeScript with proper props interface
+3. Apply Tailwind styling with dark mode support
+4. Export as default or named export
+
+### Modifying RSS Feed
+- Edit `src/app/feed.xml/route.ts`
+- Ensure `NEXT_PUBLIC_SITE_URL` is set
+- Feed auto-generates from blog posts
+
+## Important Files Reference
+- `src/lib/posts.ts` - Post discovery and metadata
+- `src/components/Layout.tsx` - Main layout wrapper
+- `src/components/PostLayout.tsx` - Blog post layout
+- `src/app/layout.tsx` - Root layout with metadata
+- `next.config.mjs` - Next.js and MDX configuration
+- `mdx-components.tsx` - Global MDX component overrides
+- `CLAUDE.md` - Complete project documentation
+
+## Best Practices
+1. Always maintain TypeScript type safety
+2. Follow existing component patterns and structure
+3. Test changes with `npm run dev` before committing
+4. Ensure responsive design across all breakpoints
+5. Include dark mode variants for all styled elements
+6. Keep components modular and reusable
+7. Use semantic HTML and accessibility best practices
+8. Optimize images and assets for web performance
+
+## When Making Changes
+1. Read relevant files first to understand current implementation
+2. Follow existing code style and patterns
+3. Update types/interfaces as needed
+4. Test locally with dev server
+5. Check for linter errors with `npm run lint`
+6. Ensure dark mode still works correctly
