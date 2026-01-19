@@ -33,7 +33,7 @@ export function ProjectCard({ name, description, logo, links }: ProjectCardProps
       <div className="absolute inset-0 z-0 rounded-2xl bg-zinc-50 ring-1 ring-zinc-100 transition group-hover:ring-2 group-hover:ring-teal-500 dark:bg-zinc-800/90 dark:ring-zinc-700/50 dark:group-hover:ring-teal-500" />
 
       <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-        <Image src={logo} alt="" className="h-8 w-8" unoptimized />
+        <Image src={logo} alt={`${name} logo`} className="h-8 w-8" unoptimized />
       </div>
       <h2 className="relative z-10 mt-6 cursor-default text-base font-semibold text-zinc-800 dark:text-zinc-100">
         {name}
@@ -43,7 +43,7 @@ export function ProjectCard({ name, description, logo, links }: ProjectCardProps
       </p>
       {links.map((link, index) => (
         <Link
-          key={index}
+          key={link.href}
           href={link.href}
           className={clsx(
             'relative z-10 flex text-sm font-medium transition-all',
