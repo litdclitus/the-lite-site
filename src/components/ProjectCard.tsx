@@ -1,5 +1,6 @@
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
+import clsx from 'clsx'
 import { Card } from '@/components/Card'
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -27,9 +28,9 @@ export interface ProjectCardProps {
 
 export function ProjectCard({ name, description, logo, links }: ProjectCardProps) {
   return (
-    <Card as="li">
-      {/* Hover background effect */}
-      <div className="absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-zinc-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:-inset-x-6 sm:rounded-2xl dark:bg-zinc-800/50" />
+    <Card as="li" className="p-4">
+      {/* Fixed background with hover border highlight */}
+      <div className="absolute inset-0 z-0 rounded-2xl bg-zinc-50 ring-1 ring-zinc-100 transition group-hover:ring-2 group-hover:ring-teal-500 dark:bg-zinc-800/90 dark:ring-zinc-700/50 dark:group-hover:ring-teal-500" />
 
       <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
         <Image src={logo} alt="" className="h-8 w-8" unoptimized />
@@ -42,9 +43,15 @@ export function ProjectCard({ name, description, logo, links }: ProjectCardProps
       </p>
       {links.map((link, index) => (
         <Link
-          key={link.href}
+          key={index}
           href={link.href}
-          className={`relative z-10 ${index === 0 ? 'mt-6' : 'mt-2'} flex text-sm font-medium text-zinc-400 transition hover:text-teal-500 dark:text-zinc-200`}
+          className={clsx(
+            'relative z-10 flex text-sm font-medium transition-all',
+            'rounded-md px-2 py-1.5 -mx-2',
+            'text-zinc-600 hover:text-teal-600 hover:bg-teal-100/50',
+            'dark:text-zinc-300 dark:hover:text-teal-400 dark:hover:bg-teal-950/50',
+            index === 0 ? 'mt-6' : 'mt-2'
+          )}
         >
           <LinkIcon className="h-6 w-6 flex-none" />
           <span className="ml-2">{link.label}</span>

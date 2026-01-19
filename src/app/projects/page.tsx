@@ -3,7 +3,7 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { ProjectCard } from '@/components/ProjectCard'
 import logoConductify from '@/images/logos/conductify.svg'
 import aiChatWidget from '@/images/logos/aichat.svg'
-import logoSalestify from '@/images/logos/salsestify.svg'
+import logoSalestify from '@/images/logos/salestify.svg'
 
 export const metadata: Metadata = {
   title: 'Projects',
