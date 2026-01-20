@@ -59,49 +59,57 @@ export default function About() {
       <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
         <div className="lg:pl-20">
           <div className="max-w-xs px-2.5 lg:max-w-none">
-            <Image
-              src={portraitImage}
-              alt=""
-              sizes="(min-width: 1024px) 32rem, 20rem"
-              className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-            />
+            <div className="relative">
+              <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-teal-400/20 to-blue-500/20 blur-2xl dark:from-teal-500/10 dark:to-blue-600/10" />
+              <Image
+                src={portraitImage}
+                alt="Portrait of Lit"
+                sizes="(min-width: 1024px) 32rem, 20rem"
+                className="relative aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover shadow-lg ring-1 ring-zinc-900/5 transition hover:rotate-0 dark:bg-zinc-800 dark:ring-white/10"
+              />
+            </div>
           </div>
         </div>
         <div className="lg:order-first lg:row-span-2">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            I’m Lit, a software enthusiast from Ho Chi Minh City, Vietnam.
-          </h1>
-          <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
+          <div className="relative">
+            <div className="absolute -left-4 top-0 h-24 w-1 rounded-full bg-gradient-to-b from-teal-500 to-blue-500 dark:from-teal-400 dark:to-blue-400" />
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+              I&apos;m Lit
+            </h1>
+          </div>
+          <p className="mt-6 text-lg font-medium leading-relaxed text-zinc-600 dark:text-zinc-300">
+            A tech enthusiast who happens to live in
+              Ho Chi Minh City, Vietnam.
+          </p>
+          <div className="mt-8 space-y-6 text-base leading-7 text-zinc-600 dark:text-zinc-400">
             <p>
-            I'm a high-velocity Full-stack Architect blending aesthetic precision with technical rigor. I don’t just build websites; I engineer digital experiences.
+              I don&apos;t just code; I turn caffeine, bad puns, and too many open tabs into digital things that (usually) don&apos;t break in production.
             </p>
             <p>
-            Currently at Conductify AI, I master high-performance stacks like Next.js and NestJS. I specialize in turning complex logic into seamless, production-ready software.
+              Right now I&apos;m having way too much fun building fast, smooth experiences.
             </p>
             <p>
-            I am driven by a passion for immersive interfaces backed by ironclad backend systems. To me, sub-second latency is the only acceptable standard for excellence.
+              My current obsessions include making interfaces feel magical and backends behave like grown-ups – all while pretending sub-100ms latency is a basic human right.
             </p>
-            <p>
-            My goal is to evolve into a Technical Architect, pioneering new standards in full-stack integration. I’m here to redefine what’s possible on the web.
+            <p className="italic">
+              I&apos;m convinced the web can be way cooler than it currently is, and I&apos;m quietly (okay, not so quietly) plotting to help make that happen.
             </p>
           </div>
         </div>
         <div className="lg:pl-20">
-          <ul role="list">
+          <ul role="list" className="space-y-4">
             <SocialLink href="https://x.com/litdclitus" icon={XIcon}>
               Follow on X
             </SocialLink>
             <SocialLink
               href="https://github.com/litdclitus"
               icon={GitHubIcon}
-              className="mt-4"
             >
               Follow on GitHub
             </SocialLink>
             <SocialLink
               href="https://www.linkedin.com/in/litdclitus/"
               icon={LinkedInIcon}
-              className="mt-4"
             >
               Follow on LinkedIn
             </SocialLink>
