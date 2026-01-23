@@ -37,7 +37,7 @@ function Post({ post }: { post: PostWithSlug }) {
 export const metadata: Metadata = {
   title: 'Blog',
   description:
-    'All of my long-form thoughts on programming, leadership, product design, and more, collected in chronological order.',
+    'All of my long-form thoughts on programming, product, business, and more, collected in chronological order.',
 }
 
 export default async function BlogIndex() {
@@ -45,7 +45,7 @@ export default async function BlogIndex() {
 
   return (
     <SimpleLayout
-      title="My experiences in software engineering, company building, and other random topics."
+      title="My experiences in software engineering, product building, and other random topics."
       intro="All of my long-form thoughts on programming, product, business, and more, collected in chronological order."
     >
       <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">

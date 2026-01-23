@@ -9,10 +9,10 @@ export const metadata: Metadata = {
   title: {
     template: '%s - litdclitus',
     default:
-      'litdclitus - Software designer, founder, and amateur astronaut',
+      'litdclitus - Tech enthusiast',
   },
   description:
-    "I'm Lit, a software enthusiast. I currently work as CTO at Alva Labs. Previously founded DevSkills which was later acquired by Alva.",
+    "I'm Lit, a software enthusiast. I'm currently working on a few side projects and building my own SaaS business.",
   alternates: {
     types: {
       'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,
