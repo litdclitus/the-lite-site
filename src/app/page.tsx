@@ -6,9 +6,8 @@ import { Card } from '@/components/Card'
 import { Container } from '@/components/Container'
 import {
   GitHubIcon,
-  InstagramIcon,
   LinkedInIcon,
-  XIcon,
+  FacebookIcon,
 } from '@/components/SocialIcons'
 import { type PostWithSlug, getAllPosts } from '@/lib/posts'
 import { formatDate } from '@/lib/formatDate'
@@ -185,13 +184,13 @@ export default async function Home() {
             litdclitus
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            Software enthusiast.
+          Caffeine-powered, chaos guy.
           </p>
           <div className="mt-6 flex gap-6">
             <SocialLink
-              href="https://x.com/litdclitus"
-              aria-label="Follow on X"
-              icon={XIcon}
+              href="https://www.facebook.com/dir.dangnh"
+              aria-label="Follow on Facebook"
+              icon={FacebookIcon}
             />
             <SocialLink
               href="https://github.com/litdclitus"

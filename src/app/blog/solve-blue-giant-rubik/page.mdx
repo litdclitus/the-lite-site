@@ -1,0 +1,156 @@
+import { PostLayout } from '@/components/PostLayout'
+
+export const article = {
+  author: 'Lit',
+  date: '2025-09-15',
+  title:
+    'The Blue Giant’s Rubik’s Cube: How I Built a High-Performance Scraper and Batch-Messaging Engine in 5 Days',
+  description:
+    'A 5-day caffeine-fueled sprint turning Facebook’s obfuscated DOM into a sub-100ms scraper and batch-messaging engine. Latency is a human right.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <PostLayout article={article} {...props} />
+
+## Intro
+
+Hello, I'm Lit.
+I once stared at a loading spinner so long I started questioning my life choices.  
+That was the day I decided: if the web is going to be slow, it’s not going to be *my* fault.
+
+So I built The Blue Giant’s Rubik’s Cube – a scraper + batch-messaging engine that loads faster than my coffee gets cold.  
+This is how it happened in 5 chaotic, caffeine-fueled days.
+
+It was 2:00 AM in Saigon. The humidity was thick enough to chew, my room lit primarily by the blue glow of 47 Chrome tabs, and my caffeine-to-blood ratio had reached "concerning." I was staring at a Facebook Page’s source code — a masterpiece of architectural spite — realizing I had two choices: spend the next month manually extracting contact info like a digital sharecropper, or spend the next five days building a tool to do it with sub-100ms efficiency that should be a basic human right.
+
+I chose the latter. (I called the early version Project Sanity Leak, because that's what it felt like.) It was a journey through obfuscated DOMs, the ``` isTrusted ``` gatekeeping of a trillion-dollar company, and the realization that sometimes the only way to win is to wait exactly 15 seconds.
+
+<figure>
+  <img
+    width={680}
+    src="/images/blog/fb-scraper/the-blue-giant-rubik-cube.png"
+    alt="2AM in Saigon solve the blue giant rubik's cube"
+  />
+</figure>
+
+
+> **A Word of Warning: The Ethics of the "Gray Area"**
+> Before we dive into the code, a disclaimer: Facebook absolutely hates this. Their official policy on scraping is roughly equivalent to their policy on people deleting their accounts—they’d rather you didn’t.
+
+## The Stack: Velocity Over Buzzwords
+
+When you’re in a 5-day sprint, you don’t pick technology because it’s trending on X; you pick it because it behaves like a grown-up.
+- [ExpressJS (MVC Model)](https://expressjs.com/): I wanted structure without the boilerplate drama. Routes that are predictable, models that don’t talk back, and controllers that do exactly what they’re told.
+- [Supabase](https://supabase.com/): My Backend-as-a-Service of choice. Why? Because configuring Postgres and Auth manually is a slow death I’m not ready for. Supabase handles the heavy lifting so I can focus on the latency.
+- [Chrome Extension](https://developer.chrome.com/docs/extensions/): This is where the war is fought. Content scripts doing DOM gymnastics to extract data and background scripts managing the batch orchestration.
+- [Handlebars](https://handlebarsjs.com/): For the dashboard. Because a well-placed template is faster than a heavy reactive framework when all you want to do is see your data and get out.
+
+<figure>
+  <img
+    width={680}
+    src="/images/blog/fb-scraper/tech-stack.jpg"
+    alt="The tech stack I used to build the project"
+  />
+  <figcaption>
+    <center>
+      <span style={{ fontSize: '1em', color: 'DimGray' }}>
+        The tech stack I used to build the project.
+      </span>
+    </center>
+  </figcaption>
+</figure>
+
+## Day 1-2: The DOM Hellscape and the "isTrusted" Wall
+
+Facebook’s DOM is not designed to be read; it’s designed to discourage the weak-willed. The CSS classes change more often than I change my cold brew order. ``` x1ja2u2z ``` today, ``` x9f619 ``` tomorrow. It’s a game of whack-a-mole where the mole has a billion-dollar R&D budget.
+
+The first "Eureka" moment came when I stopped trying to be "smart" with selectors and started being "human." I realized that while classes are volatile, Accessibility Labels are legally required and functionally stable. If the label says "Address" or "Mobile," that’s my North Star.
+
+But then came the true personal insult: the ```isTrusted: false``` flag. Facebook’s chatbox phantoms. You can inject text all you want, but if the event doesn't carry that ```isTrusted: true``` badge of honor, the "Send" button stays gray and silent, mocking you. Bypassing this required some creative (and borderline masochistic) use of Chrome Debugger APIs, simulated inputs, and a prayer that the event would feel "trusted" enough. Spoiler: it mostly worked... after many failed prayers.
+
+<figure>
+  <img
+    width={680}
+    src="/images/blog/fb-scraper/dom-maze.jpg"
+    alt="The DOM hellscape and the 'isTrusted' wall"
+  />
+  <figcaption>
+    <center>
+      <span style={{ fontSize: '1em', color: 'DimGray' }}>
+        The DOM hellscape and the 'isTrusted' wall.
+      </span>
+    </center>
+  </figcaption>
+</figure>
+
+## Day 3-4: The 5-Tab Symphony (and the 15-Second Silence)
+
+Once scraping worked, I needed scale. But scale on Facebook is a fast track to "Account Restricted" glory.
+
+The solution? Batching. I built a loop that opens exactly 5 tabs at a time. No more, no less. But here’s the dry wit of web dev: I am obsessed with sub-100ms latency, yet I had to force the system to wait.
+
+The transcripts of my debug logs tell a story of compromise. I had to implement a 15-second buffer for lazy loading. Why? Because Facebook’s content is like a shy teenager—it only shows up once it's sure you're actually looking. 15 seconds felt like an eternity. It felt like a personal failure. But when those 5 tabs finally load, scrape the emails, phones, and addresses, and then snap shut like a hungry venus flytrap... it’s pure, unadulterated performance art.
+
+<figure>
+  <img
+    width={680}
+    src="/images/blog/fb-scraper/batching-process.jpg"
+    alt="The batching process"
+  />
+  <figcaption>
+    <center>
+      <span style={{ fontSize: '1em', color: 'DimGray' }}>
+        The batching process.
+      </span>
+    </center>
+  </figcaption>
+</figure>
+
+## Day 5: The Cleanup and the Flex
+
+The final piece of the puzzle was the CSV Loopback. Real-world data is filthy. It’s full of typos and questionable formatting. I implemented a download/upload flow:
+
+1. Crawl the raw data.
+
+2. Download the CSV.
+
+3. Clean it up in Excel (the only place where manual labor is still allowed).
+
+4. Upload it back to trigger the batch messaging.
+
+<figure>
+  <img
+    width={680}
+    src="/images/blog/fb-scraper/data-cleanup.jpg"
+    alt="The data cleanup process"
+  />
+  <figcaption>
+    <center>
+      <span style={{ fontSize: '1em', color: 'DimGray' }}>
+        The data cleanup process.
+      </span>
+    </center>
+  </figcaption>
+</figure>
+
+Seeing the "Batch Messaging" module cycle through a cleaned list, opening 5 tabs, injecting the ``` isTrusted ``` messages, and closing them automatically was the "magical" moment. The dashboard now updates in real-time. It moves faster than my coffee gets cold—and in Saigon's heat, that is a high bar to clear.
+
+### Lessons from the Abyss
+
+1. Regex is a Double-Edged Sword: I spent three hours chasing a bug because my regex was too "strict." I was essentially gaslighting my own code. In an unstructured world, flexibility is the only logic that survives.
+
+2. Latency is a Basic Human Right: Even if I have to wait 15s for Facebook to load, the processing of that data better be instant.
+
+3. The DOM is a Lie: Trust labels, not classes. The classes are just there to make you feel small.
+
+### The Punchline
+
+So, there it is. 5 days from caffeine overdose to a production-ready scraping engine that respects the "batch" and laughs at obfuscation. It’s not "revolutionary" (a word only used by people who don't code), but it is efficient.
+
+Try it, judge my 15-second wait times—or don’t. It’s your latency, your rules. I’m going to go close these tabs now. My RAM is starting to develop a personality, and it's a very stressed one.
+
+<i>Next up: Investigating why Facebook's "isTrusted" check feels like a mid-life crisis for developers. Or maybe I'll just go get another coffee.</i>
