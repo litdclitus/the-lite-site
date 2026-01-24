@@ -107,10 +107,10 @@ export default function About() {
               Follow on GitHub
             </SocialLink>
             <SocialLink
-              href="https://www.linkedin.com/in/litdclitus/"
-              icon={LinkedInIcon}
+              href="mailto:dangnh799@gmail.com"
+              icon={MailIcon}
             >
-              Follow on LinkedIn
+              Contact me
             </SocialLink>
           </ul>
         </div>
