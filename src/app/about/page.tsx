@@ -97,15 +97,20 @@ export default function About() {
         </div>
         <div className="lg:pl-20">
           <ul role="list" className="space-y-4">
-            <SocialLink href="https://www.facebook.com/dir.dangnh" icon={FacebookIcon}>
-              Follow on Facebook
-            </SocialLink>
             <SocialLink
               href="https://www.github.com/litdclitus"
               icon={GitHubIcon}
             >
               Follow on GitHub
             </SocialLink>
+            
+            <SocialLink
+              href="https://www.linkedin.com/in/litdclitus/"
+              aria-label="Follow on LinkedIn"
+              icon={LinkedInIcon}>
+              Follow on LinkedIn
+            </SocialLink>
+            
             <SocialLink
               href="mailto:dangnh799@gmail.com"
               icon={MailIcon}
