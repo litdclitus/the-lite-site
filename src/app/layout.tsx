@@ -2,6 +2,7 @@ import { type Metadata } from 'next'
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
+import ChatWidget from '@/components/ChatWidget'
 
 import '@/styles/tailwind.css'
 
@@ -29,9 +30,10 @@ export default function RootLayout({
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="flex h-full bg-zinc-50 dark:bg-black">
         <Providers>
-          <div className="flex w-full">
+          <div className="flex w-full pb-32">
             <Layout>{children}</Layout>
           </div>
+          <ChatWidget />
         </Providers>
       </body>
     </html>

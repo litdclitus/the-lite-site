@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:gemini": "node scripts/test-gemini-api.js"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
+    "@ai-sdk/google": "^3.0.23",
+    "@ai-sdk/react": "^3.0.80",
     "@headlessui/react": "^2.1.0",
     "@mapbox/rehype-prism": "^0.9.0",
     "@mdx-js/loader": "^3.0.0",
@@ -21,6 +24,7 @@
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "@types/webpack-env": "^1.18.1",
+    "ai": "^6.0.78",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.0",
     "fast-glob": "^3.2.11",
@@ -36,6 +40,7 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
+    "dotenv": "^17.2.4",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.0.4",
     "prettier": "^3.3.2",
