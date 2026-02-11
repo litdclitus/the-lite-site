@@ -58,9 +58,79 @@ const knowledgeKeywords = /freelance|remote|contact|email|github|linkedin|facebo
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    // Validate API key exists
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!apiKey || apiKey.trim() === '') {
+      console.error('❌ GOOGLE_GENERATIVE_AI_API_KEY is not configured');
+      return new Response(
+        JSON.stringify({
+          error: 'Server configuration error. Please contact the administrator.',
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
-    console.log('📩 Received messages:', messages);
+    // Parse and validate request body
+    let body;
+    try {
+      body = await req.json();
+    } catch (parseError) {
+      console.error('❌ Invalid JSON in request body:', parseError);
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid request format.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    const { messages } = body;
+
+    // Validate messages field
+    if (!messages) {
+      console.error('❌ Missing messages field in request body');
+      return new Response(
+        JSON.stringify({
+          error: 'Missing required field: messages.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    if (!Array.isArray(messages)) {
+      console.error('❌ Messages field is not an array:', typeof messages);
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid messages format. Expected an array.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    if (messages.length === 0) {
+      console.error('❌ Messages array is empty');
+      return new Response(
+        JSON.stringify({
+          error: 'Messages array cannot be empty.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     const modelMessages = await convertToModelMessages(messages);
 
@@ -90,8 +160,6 @@ export async function POST(req: Request) {
 
     // Sliding window: 6 latest messages
     const recentMessages = modelMessages.slice(-6);
-    console.log(`💰 Server-side trim: ${modelMessages.length} → ${recentMessages.length} messages sent`);
-
     const result = streamText({
       model: google('gemini-2.5-flash'),
       system: systemPrompt,
@@ -100,7 +168,6 @@ export async function POST(req: Request) {
       maxOutputTokens: 400,
     });
 
-    console.log('✅ Streaming response...');
     return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error('Chat API Error:', error);

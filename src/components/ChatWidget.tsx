@@ -1,6 +1,7 @@
 'use client'
 
 import { useChat } from '@ai-sdk/react'
+import type { UIMessage } from '@ai-sdk/react'
 import { useState, useEffect, useRef } from 'react'
 import { useChatContext } from '@/contexts/ChatContext'
 
@@ -10,37 +11,32 @@ export default function ChatWidget() {
   const [isRateLimited, setIsRateLimited] = useState(false)
   const [isFloatingExpanded, setIsFloatingExpanded] = useState(false)
   const [hasScrolledAndStopped, setHasScrolledAndStopped] = useState(false)
-  const [isDesktop, setIsDesktop] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const floatingContainerRef = useRef<HTMLDivElement>(null)
   const collapseTimerRef = useRef<NodeJS.Timeout | null>(null)
   const lastScrollYRef = useRef(0)
 
-  const { messages, sendMessage, status, error, setMessages } = useChat({
+  const { messages, sendMessage, status, setMessages } = useChat({
     onFinish: () => {
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto'
       }
     },
     onError: (err) => {
-      if (
-        err.message.includes('429') ||
-        err.message.toLowerCase().includes('rate') ||
-        err.message.toLowerCase().includes('too many')
-      ) {
-        setIsRateLimited(true)
-        setTimeout(() => {
-          setIsRateLimited(false)
-        }, 120000)
-      }
+      // Mọi lỗi đều hiển thị như rate limit message (không show chi tiết lỗi)
+      console.error('Chat error (hidden from UI):', err)
+      setIsRateLimited(true)
+      setTimeout(() => {
+        setIsRateLimited(false)
+      }, 120000) // 2 phút
     },
   })
 
   // Auto trim messages to keep only recent 8 (4 pairs)
   useEffect(() => {
     if (messages.length > 8) {
-      const recentMessages = messages.slice(-8)
+      const recentMessages = messages.slice(-6)
       setMessages(recentMessages)
     }
   }, [messages, setMessages])
@@ -67,16 +63,6 @@ export default function ChatWidget() {
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`
     }
   }, [input])
-
-  // Detect desktop/mobile
-  useEffect(() => {
-    const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 768)
-    }
-    checkDesktop()
-    window.addEventListener('resize', checkDesktop)
-    return () => window.removeEventListener('resize', checkDesktop)
-  }, [])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -193,14 +179,23 @@ export default function ChatWidget() {
     setIsDocked(false)
   }
 
-  // Extract text from message parts
-  const getMessageText = (message: any): string => {
-    if (message.parts && Array.isArray(message.parts)) {
+  // Extract text from message parts with proper typing
+  const getMessageText = (message: UIMessage): string => {
+    // Handle UIMessage format from @ai-sdk/react
+    if ('parts' in message && Array.isArray(message.parts)) {
       return message.parts
-        .map((part: any) => {
+        .map((part: unknown) => {
           if (typeof part === 'string') return part
-          if (part.text) return part.text
-          if (part.type === 'text' && part.text) return part.text
+          if (
+            part &&
+            typeof part === 'object' &&
+            'type' in part &&
+            part.type === 'text' &&
+            'text' in part &&
+            typeof part.text === 'string'
+          ) {
+            return part.text
+          }
           return ''
         })
         .filter(Boolean)
@@ -322,18 +317,11 @@ export default function ChatWidget() {
             </div>
           )}
 
-          {/* Rate Limit Message */}
+          {/* Rate Limit Message - for all errors */}
           {isRateLimited && (
             <div className="rounded-[16px] border border-amber-200/50 bg-amber-50/80 px-4 py-3 text-sm text-amber-800 dark:border-amber-800/50 dark:bg-amber-900/20 dark:text-amber-200">
               You&apos;re sending too many messages. Please wait a moment and
               try again.
-            </div>
-          )}
-
-          {/* Error Message */}
-          {error && !isRateLimited && (
-            <div className="rounded-[16px] border border-red-200/50 bg-red-50/80 px-4 py-3 text-sm text-red-800 dark:border-red-800/50 dark:bg-red-900/20 dark:text-red-200">
-              <strong className="font-semibold">Error:</strong> {error.message}
             </div>
           )}
 
