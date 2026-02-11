@@ -11,7 +11,7 @@
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
-    "@ai-sdk/google": "^3.0.23",
+    "@ai-sdk/google": "^3.0.24",
     "@ai-sdk/react": "^3.0.80",
     "@headlessui/react": "^2.1.0",
     "@mapbox/rehype-prism": "^0.9.0",
@@ -24,7 +24,7 @@
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "@types/webpack-env": "^1.18.1",
-    "ai": "^6.0.78",
+    "ai": "^6.0.79",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.0",
     "fast-glob": "^3.2.11",
