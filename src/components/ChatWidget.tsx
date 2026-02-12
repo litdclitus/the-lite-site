@@ -4,6 +4,7 @@ import { useChat } from '@ai-sdk/react'
 import type { UIMessage } from '@ai-sdk/react'
 import { useState, useEffect, useRef } from 'react'
 import { useChatContext } from '@/contexts/ChatContext'
+import MessageContent from '@/components/MessageContent'
 
 export default function ChatWidget() {
   const { isDocked, setIsDocked } = useChatContext()
@@ -19,24 +20,32 @@ export default function ChatWidget() {
 
   const { messages, sendMessage, status, setMessages } = useChat({
     onFinish: () => {
+      // Reset textarea height and auto-focus after AI response completes
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto'
+        // Small delay to ensure smooth focus transition
+        setTimeout(() => {
+          textareaRef.current?.focus()
+        }, 100)
       }
     },
     onError: (err) => {
-      // Mọi lỗi đều hiển thị như rate limit message (không show chi tiết lỗi)
-      console.error('Chat error (hidden from UI):', err)
+      console.error('❌ Chat error:', err)
       setIsRateLimited(true)
       setTimeout(() => {
         setIsRateLimited(false)
-      }, 120000) // 2 phút
+      }, 90000)
+      // Focus back on error
+      setTimeout(() => {
+        textareaRef.current?.focus()
+      }, 100)
     },
   })
 
-  // Auto trim messages to keep only recent 8 (4 pairs)
+  // Auto trim messages to keep only recent 30 (15 pairs)
   useEffect(() => {
-    if (messages.length > 8) {
-      const recentMessages = messages.slice(-6)
+    if (messages.length > 30) {
+      const recentMessages = messages.slice(-30)
       setMessages(recentMessages)
     }
   }, [messages, setMessages])
@@ -151,6 +160,7 @@ export default function ChatWidget() {
     if (!canSend) return
 
     const userInput = input.trim()
+    const wasDockedBefore = isDocked
 
     // Clear input immediately
     setInput('')
@@ -160,6 +170,14 @@ export default function ChatWidget() {
 
     // Always transition to docked mode when sending a message
     setIsDocked(true)
+
+    // Auto-focus textarea after sending message
+    // If already docked: focus immediately after state updates
+    // If transitioning from floating: wait for panel animation (300ms + buffer)
+    const focusDelay = wasDockedBefore ? 50 : 350
+    setTimeout(() => {
+      textareaRef.current?.focus()
+    }, focusDelay)
 
     try {
       await sendMessage({ text: userInput })
@@ -274,20 +292,16 @@ export default function ChatWidget() {
                 {m.role === 'user' && (
                   <div className="flex justify-end">
                     <div className="max-w-[80%] rounded-[20px] rounded-tr-md bg-[#27272A] px-4 py-2.5 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#27272A]">
-                      <div className="break-words whitespace-pre-wrap">
-                        {text}
-                      </div>
+                      <MessageContent content={text} role="user" />
                     </div>
                   </div>
                 )}
 
-                {/* AI Message */}
+                {/* AI Message - with streaming support */}
                 {m.role === 'assistant' && (
                   <div className="flex justify-start">
                     <div className="max-w-[85%] rounded-[20px] rounded-tl-md bg-white/90 px-4 py-2.5 text-[15px] leading-relaxed text-[#18181B] shadow-sm ring-1 ring-zinc-200/70 dark:bg-[#18181B]/90 dark:text-[#E5E4E2] dark:ring-zinc-800/80">
-                      <div className="break-words whitespace-pre-wrap">
-                        {text}
-                      </div>
+                      <MessageContent content={text} role="assistant" />
                     </div>
                   </div>
                 )}
