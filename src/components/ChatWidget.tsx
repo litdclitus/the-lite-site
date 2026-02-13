@@ -12,6 +12,7 @@ export default function ChatWidget() {
   const [isRateLimited, setIsRateLimited] = useState(false)
   const [isFloatingExpanded, setIsFloatingExpanded] = useState(false)
   const [hasScrolledAndStopped, setHasScrolledAndStopped] = useState(false)
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const floatingContainerRef = useRef<HTMLDivElement>(null)
@@ -25,20 +26,22 @@ export default function ChatWidget() {
         textareaRef.current.style.height = 'auto'
       }
 
-      // Auto-focus after bot response completes
-      // Retry logic: wait for textarea to be ready (not disabled)
-      let attempts = 0
-      const maxAttempts = 10
-      const intervalId = setInterval(() => {
-        attempts++
+      // ✅ Auto-focus after bot response completes (desktop only to avoid mobile keyboard)
+      if (typeof window !== 'undefined' && window.innerWidth > 768) {
+        // Retry logic: wait for textarea to be ready (not disabled)
+        let attempts = 0
+        const maxAttempts = 10
+        const intervalId = setInterval(() => {
+          attempts++
 
-        if (textareaRef.current && !textareaRef.current.disabled) {
-          textareaRef.current.focus()
-          clearInterval(intervalId)
-        } else if (attempts >= maxAttempts) {
-          clearInterval(intervalId)
-        }
-      }, 50) // Check every 50ms
+          if (textareaRef.current && !textareaRef.current.disabled) {
+            textareaRef.current.focus()
+            clearInterval(intervalId)
+          } else if (attempts >= maxAttempts) {
+            clearInterval(intervalId)
+          }
+        }, 50) // Check every 50ms
+      }
     },
     onError: (err) => {
       console.error('❌ Chat error:', err)
@@ -62,9 +65,62 @@ export default function ChatWidget() {
     setIsFloatingExpanded(false)
   }, [isDocked])
 
-  // Auto-focus when opening chat panel from floating
+  // 🔥 Visual Viewport API: Handle keyboard open/close on mobile ONLY
   useEffect(() => {
+    if (typeof window === 'undefined' || !window.visualViewport) return
+    
+    // Only apply on mobile (≤ 768px)
+    const isMobile = window.innerWidth <= 768
+    if (!isMobile) return
+
+    const handleViewportResize = () => {
+      if (window.visualViewport) {
+        // Update panel height based on actual visible viewport (excludes keyboard)
+        setViewportHeight(window.visualViewport.height)
+      }
+    }
+
+    // Set initial height for mobile
+    if (window.visualViewport) {
+      setViewportHeight(window.visualViewport.height)
+    }
+
+    window.visualViewport.addEventListener('resize', handleViewportResize)
+    return () => {
+      window.visualViewport?.removeEventListener('resize', handleViewportResize)
+    }
+  }, [])
+
+  // 🔒 Body Scroll Lock: Prevent scroll when chat panel is open (MOBILE ONLY)
+  useEffect(() => {
+    // Only apply on mobile (≤ 768px)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    if (!isMobile) return
+
     if (isDocked) {
+      // Lock body scroll on mobile
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+      document.body.style.overflow = 'hidden'
+      document.body.style.touchAction = 'none'
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    } else {
+      // Unlock body scroll
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+      document.body.style.paddingRight = ''
+    }
+
+    return () => {
+      // Cleanup on unmount
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+      document.body.style.paddingRight = ''
+    }
+  }, [isDocked])
+
+  // ✅ Auto-focus when opening chat panel from floating (desktop only to avoid mobile keyboard)
+  useEffect(() => {
+    if (isDocked && typeof window !== 'undefined' && window.innerWidth > 768) {
       // Retry logic: wait for textarea to be ready (not disabled)
       let attempts = 0
       const maxAttempts = 8
@@ -241,19 +297,24 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* 🌫️ Backdrop Overlay - Mobile ONLY for readability */}
       {isDocked && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          className="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-md md:hidden"
           onClick={handleClose}
         />
       )}
 
-      {/* Docked Chat Panel */}
+      {/* 💬 Docked Chat Panel - Mobile optimized with dynamic viewport */}
       <div
-        className={`fixed top-0 right-0 z-50 h-screen border-l border-zinc-200/70 bg-[#F9FAFB] transition-all duration-300 ease-out dark:border-zinc-800 dark:bg-[#020617cc] ${
+        className={`fixed top-0 right-0 z-[9999] h-screen md:h-screen border-l border-zinc-200/70 bg-[#F9FAFB] transition-all duration-300 ease-out dark:border-zinc-800 dark:bg-[#020617cc] ${
           isDocked ? 'translate-x-0' : 'translate-x-full'
         } flex w-full flex-col shadow-[0_0_40px_rgba(0,0,0,0.12)] md:w-[min(500px,30vw)] dark:shadow-[0_0_50px_rgba(0,0,0,0.7)]`}
+        style={
+          viewportHeight && isDocked
+            ? { height: `${viewportHeight}px` }
+            : undefined
+        }
       >
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-zinc-200/70 bg-white/80 px-5 py-4 backdrop-blur-sm dark:border-zinc-800 dark:bg-[#020617]/80">
@@ -374,7 +435,7 @@ export default function ChatWidget() {
                 placeholder="Type a message..."
                 disabled={isLoading || isRateLimited}
                 rows={1}
-                className="w-full resize-none overflow-hidden rounded-2xl border border-zinc-200/70 bg-white/90 px-4 py-3 text-[15px] leading-relaxed text-[#18181B] shadow-sm transition-colors placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:border-[#3A3A3C] dark:bg-[#18181B]/90 dark:text-[#F4F4F5] dark:placeholder:text-[#71717A]"
+                className="w-full resize-none overflow-hidden rounded-2xl border border-zinc-200/70 bg-white/90 px-4 py-3 text-base leading-relaxed text-[#18181B] shadow-sm transition-colors placeholder:text-zinc-400 focus:border-zinc-500 focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:border-[#3A3A3C] dark:bg-[#18181B]/90 dark:text-[#F4F4F5] dark:placeholder:text-[#71717A]"
               />
             </div>
             <button
@@ -453,9 +514,9 @@ export default function ChatWidget() {
                   }
                 }}
                 onBlur={() => setIsFloatingExpanded(false)}
-                placeholder="Ask Lit something..."
+                placeholder="Ask a question..."
                 disabled={isLoading || isRateLimited}
-                className="flex-1 border-0 bg-transparent text-[15px] text-zinc-900 outline-none placeholder:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-[#E5E4E2] dark:placeholder:text-[#9B9B9B]"
+                className="flex-1 border-0 bg-transparent text-base text-zinc-900 outline-none placeholder:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-[#E5E4E2] dark:placeholder:text-[#9B9B9B]"
               />
               {isRateLimited ? (
                 <div className="shrink-0 text-xs text-amber-500 dark:text-amber-400">
