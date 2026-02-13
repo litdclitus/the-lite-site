@@ -14,6 +14,7 @@ import {
 import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
+import { useChatContext } from '@/contexts/ChatContext'
 import avatarImage from '@/images/avatar.jpg'
 
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -228,18 +229,29 @@ function Avatar({
       aria-label="Home"
       className={clsx(className, 'pointer-events-auto')}
       {...props}
-    >
-      
-    </Link>
+    ></Link>
   )
 }
 
 export function Header() {
   let isHomePage = usePathname() === '/'
+  const { isDocked } = useChatContext()
+  const [isDesktop, setIsDesktop] = useState(false)
 
   let headerRef = useRef<React.ElementRef<'div'>>(null)
   let avatarRef = useRef<React.ElementRef<'div'>>(null)
   let isInitial = useRef(true)
+
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768)
+    }
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
+
+  const shouldUseTwoColumn = isDocked && isDesktop
 
   useEffect(() => {
     let downDelay = avatarRef.current?.offsetTop ?? 0
@@ -366,8 +378,9 @@ export function Header() {
               <div
                 className="top-(--avatar-top,--spacing(3)) w-full"
                 style={{
-                  position:
-                    'var(--header-inner-position)' as React.CSSProperties['position'],
+                  position: shouldUseTwoColumn
+                    ? ('sticky' as React.CSSProperties['position'])
+                    : ('var(--header-inner-position)' as React.CSSProperties['position']),
                 }}
               >
                 <div className="relative">
@@ -394,14 +407,15 @@ export function Header() {
           <Container
             className="top-(--header-top,--spacing(6)) w-full"
             style={{
-              position:
-                'var(--header-inner-position)' as React.CSSProperties['position'],
+              position: shouldUseTwoColumn
+                ? ('sticky' as React.CSSProperties['position'])
+                : ('var(--header-inner-position)' as React.CSSProperties['position']),
             }}
           >
-            <div className="relative flex justify-between items-center md:justify-center">
+            <div className="relative flex items-center justify-between md:justify-center">
               <MobileNavigation className="pointer-events-auto md:hidden" />
               <DesktopNavigation className="pointer-events-auto hidden md:block" />
-              <div className="pointer-events-auto md:absolute md:right-0 md:top-0">
+              <div className="pointer-events-auto md:absolute md:top-0 md:right-0">
                 <ThemeToggle />
               </div>
             </div>
