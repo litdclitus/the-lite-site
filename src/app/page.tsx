@@ -4,10 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
 import { Container } from '@/components/Container'
-import {
-  GitHubIcon,
-  LinkedInIcon,
-} from '@/components/SocialIcons'
+import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
 import { type PostWithSlug, getAllPosts } from '@/lib/posts'
 import { formatDate } from '@/lib/formatDate'
 
@@ -171,7 +168,7 @@ export default async function Home() {
             litdclitus
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-          Caffeine-powered, chaos guy.
+            Caffeine-powered, chaos guy.
           </p>
           <div className="mt-6 flex gap-6">
             {/* <SocialLink
@@ -189,10 +186,7 @@ export default async function Home() {
               aria-label="Follow on LinkedIn"
               icon={LinkedInIcon}
             />
-            <SocialLink
-              href="mailto:dangnh799@gmail.com"
-              icon={MailIcon}
-            />
+            <SocialLink href="mailto:dangnh799@gmail.com" icon={MailIcon} />
           </div>
         </div>
       </Container>
