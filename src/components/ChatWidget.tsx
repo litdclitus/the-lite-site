@@ -20,14 +20,25 @@ export default function ChatWidget() {
 
   const { messages, sendMessage, status, setMessages } = useChat({
     onFinish: () => {
-      // Reset textarea height and auto-focus after AI response completes
+      // Reset textarea height after AI response completes
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto'
-        // Small delay to ensure smooth focus transition
-        setTimeout(() => {
-          textareaRef.current?.focus()
-        }, 100)
       }
+
+      // Auto-focus after bot response completes
+      // Retry logic: wait for textarea to be ready (not disabled)
+      let attempts = 0
+      const maxAttempts = 10
+      const intervalId = setInterval(() => {
+        attempts++
+
+        if (textareaRef.current && !textareaRef.current.disabled) {
+          textareaRef.current.focus()
+          clearInterval(intervalId)
+        } else if (attempts >= maxAttempts) {
+          clearInterval(intervalId)
+        }
+      }, 50) // Check every 50ms
     },
     onError: (err) => {
       console.error('❌ Chat error:', err)
@@ -35,10 +46,6 @@ export default function ChatWidget() {
       setTimeout(() => {
         setIsRateLimited(false)
       }, 90000)
-      // Focus back on error
-      setTimeout(() => {
-        textareaRef.current?.focus()
-      }, 100)
     },
   })
 
@@ -53,6 +60,27 @@ export default function ChatWidget() {
   // Reset floating expanded state when docked changes or component mounts
   useEffect(() => {
     setIsFloatingExpanded(false)
+  }, [isDocked])
+
+  // Auto-focus when opening chat panel from floating
+  useEffect(() => {
+    if (isDocked) {
+      // Retry logic: wait for textarea to be ready (not disabled)
+      let attempts = 0
+      const maxAttempts = 8
+      const intervalId = setInterval(() => {
+        attempts++
+
+        if (textareaRef.current && !textareaRef.current.disabled) {
+          textareaRef.current.focus()
+          clearInterval(intervalId)
+        } else if (attempts >= maxAttempts) {
+          clearInterval(intervalId)
+        }
+      }, 50) // Check every 50ms (total max 400ms)
+
+      return () => clearInterval(intervalId)
+    }
   }, [isDocked])
 
   const isLoading = status === 'streaming' || status === 'submitted'
@@ -81,9 +109,7 @@ export default function ChatWidget() {
         e.preventDefault()
         if (!isDocked) {
           setIsDocked(true)
-          setTimeout(() => {
-            textareaRef.current?.focus()
-          }, 350)
+          // Auto-focus will be handled by useEffect isDocked
         }
       }
       // ESC to close chat panel
@@ -160,7 +186,6 @@ export default function ChatWidget() {
     if (!canSend) return
 
     const userInput = input.trim()
-    const wasDockedBefore = isDocked
 
     // Clear input immediately
     setInput('')
@@ -170,14 +195,6 @@ export default function ChatWidget() {
 
     // Always transition to docked mode when sending a message
     setIsDocked(true)
-
-    // Auto-focus textarea after sending message
-    // If already docked: focus immediately after state updates
-    // If transitioning from floating: wait for panel animation (300ms + buffer)
-    const focusDelay = wasDockedBefore ? 50 : 350
-    setTimeout(() => {
-      textareaRef.current?.focus()
-    }, focusDelay)
 
     try {
       await sendMessage({ text: userInput })
@@ -418,7 +435,6 @@ export default function ChatWidget() {
               }`}
             >
               <input
-                ref={textareaRef as any}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -437,7 +453,7 @@ export default function ChatWidget() {
                   }
                 }}
                 onBlur={() => setIsFloatingExpanded(false)}
-                placeholder="Ask a question..."
+                placeholder="Ask Lit something..."
                 disabled={isLoading || isRateLimited}
                 className="flex-1 border-0 bg-transparent text-[15px] text-zinc-900 outline-none placeholder:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-[#E5E4E2] dark:placeholder:text-[#9B9B9B]"
               />
