@@ -1,5 +1,6 @@
 import { useChat } from '@ai-sdk/react'
 import { useState, useEffect, useRef } from 'react'
+import { extractMessageText } from '@/utils/messageUtils'
 
 interface UseChatLogicProps {
   textareaRef: React.RefObject<HTMLTextAreaElement>
@@ -49,10 +50,31 @@ export function useChatLogic({ textareaRef, onPanelOpen }: UseChatLogicProps) {
   // Auto scroll to bottom
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const isLoading = status === 'streaming' || status === 'submitted'
+  const lastMessageLengthRef = useRef(0)
 
+  // Enhanced auto-scroll: Tracks message changes, streaming state, and content length
   useEffect(() => {
-    if (messages.length > 0) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const shouldScroll = messages.length > 0
+    if (!shouldScroll) return
+
+    // Calculate total content length to detect streaming updates
+    const currentLength = messages.reduce((sum, m) => {
+      const text = extractMessageText(m)
+      return sum + text.length
+    }, 0)
+
+    // Scroll on: new messages, loading state changes, or streaming content updates
+    const hasNewContent = currentLength > lastMessageLengthRef.current
+    lastMessageLengthRef.current = currentLength
+
+    if (hasNewContent || isLoading) {
+      // "Gravity scroll" (pin to bottom). On mobile Safari, smooth scrolling while streaming can jitter.
+      requestAnimationFrame(() => {
+        messagesEndRef.current?.scrollIntoView({
+          behavior: isLoading ? 'auto' : 'smooth',
+          block: 'end',
+        })
+      })
     }
   }, [messages, isLoading])
 
@@ -63,6 +85,31 @@ export function useChatLogic({ textareaRef, onPanelOpen }: UseChatLogicProps) {
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`
     }
   }, [input, textareaRef])
+
+  // Mobile: Scroll to bottom when input is focused (keyboard opens)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    
+    const isMobile = window.innerWidth <= 768
+    if (!isMobile || !textareaRef.current) return
+
+    const handleFocus = () => {
+      // Delay scroll to allow keyboard animation to complete
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'end'
+        })
+      }, 300)
+    }
+
+    const textarea = textareaRef.current
+    textarea.addEventListener('focus', handleFocus)
+
+    return () => {
+      textarea?.removeEventListener('focus', handleFocus)
+    }
+  }, [textareaRef, messagesEndRef])
 
   const canSend = !!input.trim() && !isLoading && !isRateLimited
 

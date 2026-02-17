@@ -30,8 +30,8 @@ export default function ChatWidget() {
     onPanelOpen: () => setIsDocked(true),
   })
 
-  // Mobile optimization
-  const { viewportHeight } = useMobileOptimization(isDocked)
+  // Mobile optimization (body scroll lock only)
+  useMobileOptimization(isDocked)
 
   // Auto-focus
   useAutoFocus(isDocked, textareaRef)
@@ -59,7 +59,7 @@ export default function ChatWidget() {
       {/* Backdrop Overlay - Mobile ONLY */}
       {isDocked && (
         <div
-          className="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-md md:hidden"
+          className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-xl md:hidden"
           onClick={handleClose}
         />
       )}
@@ -68,7 +68,6 @@ export default function ChatWidget() {
       <ChatPanel
         isDocked={isDocked}
         onClose={handleClose}
-        viewportHeight={viewportHeight}
         messages={messages}
         isLoading={isLoading}
         isRateLimited={isRateLimited}
