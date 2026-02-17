@@ -6,6 +6,15 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Mobile viewport and keyboard handling optimizations */
+@supports (-webkit-touch-callout: none) {
+  /* iOS-specific fixes */
+  body {
+    /* Prevent viewport zoom on input focus */
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
 @theme {
   --text-xs: 0.8125rem;
   --text-xs--line-height: 1.5rem;

@@ -1,11 +1,12 @@
 import type { UIMessage } from '@ai-sdk/react'
+import { useRef } from 'react'
 import ChatMessages from './ChatMessages'
 import ChatInput from './ChatInput'
+import { useVisualViewportPanelSizing } from '@/hooks/useVisualViewportPanelSizing'
 
 interface ChatPanelProps {
   isDocked: boolean
   onClose: () => void
-  viewportHeight: number | null
   messages: UIMessage[]
   isLoading: boolean
   isRateLimited: boolean
@@ -20,7 +21,6 @@ interface ChatPanelProps {
 export default function ChatPanel({
   isDocked,
   onClose,
-  viewportHeight,
   messages,
   isLoading,
   isRateLimited,
@@ -31,25 +31,31 @@ export default function ChatPanel({
   textareaRef,
   canSend,
 }: ChatPanelProps) {
+  const panelRef = useRef<HTMLDivElement>(null)
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+
+  useVisualViewportPanelSizing({
+    enabled: isDocked && isMobile,
+    panelRef,
+  })
+
   return (
     <div
-      className={`fixed top-0 right-0 z-[9999] h-screen md:h-screen border-l border-zinc-200/70 bg-[#F9FAFB] transition-all duration-300 ease-out dark:border-zinc-800 dark:bg-[#020617cc] ${
+      ref={panelRef}
+      className={`fixed right-0 z-[9999] h-screen border-l border-zinc-200/70 bg-white/[0.98] backdrop-blur-2xl transition-transform duration-300 ease-out will-change-transform dark:border-zinc-800 dark:bg-zinc-950/[0.99] md:bg-[#F9FAFB] md:backdrop-blur-sm md:dark:bg-[#020617cc] ${
         isDocked ? 'translate-x-0' : 'translate-x-full'
-      } flex w-full flex-col shadow-[0_0_40px_rgba(0,0,0,0.12)] md:w-[min(500px,30vw)] dark:shadow-[0_0_50px_rgba(0,0,0,0.7)]`}
-      style={
-        viewportHeight && isDocked ? { height: `${viewportHeight}px` } : undefined
-      }
+      } top-0 flex w-full min-h-0 flex-col shadow-[0_0_40px_rgba(0,0,0,0.12)] md:w-[min(500px,30vw)] dark:shadow-[0_0_50px_rgba(0,0,0,0.7)]`}
     >
       {/* Header */}
-      <div className="flex shrink-0 items-center justify-between border-b border-zinc-200/70 bg-white/80 px-5 py-4 backdrop-blur-sm dark:border-zinc-800 dark:bg-[#020617]/80">
-        <div className="flex items-center gap-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-zinc-200/70 bg-white/[0.9] px-3 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] backdrop-blur-2xl md:bg-white/80 md:px-5 md:py-4 md:pt-4 md:backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/[0.88] md:dark:bg-[#020617]/80">
+        <div className="flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="#5EEAD4"
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="size-6"
+            className="size-5 md:size-6"
           >
             <path
               strokeLinecap="round"
@@ -58,13 +64,13 @@ export default function ChatPanel({
             />
           </svg>
 
-          <h3 className="text-xl font-medium text-[#2C2C2E] dark:text-[#E5E4E2]">
+          <h3 className="text-lg font-medium text-[#2C2C2E] md:text-xl dark:text-[#E5E4E2]">
             Lit Bot
           </h3>
         </div>
         <button
           onClick={onClose}
-          className="rounded-lg p-2 text-[#6B6B6B] transition-colors hover:bg-[#E5E4E2]/50 dark:text-[#9B9B9B] dark:hover:bg-[#2C2C2E]/50"
+          className="rounded-lg p-1.5 text-[#6B6B6B] transition-colors md:p-2 hover:bg-[#E5E4E2]/50 dark:text-[#9B9B9B] dark:hover:bg-[#2C2C2E]/50"
           aria-label="Close chat"
         >
           <svg
