@@ -33,6 +33,14 @@ You have NO knowledge about Lit's personal info, projects, work, or life beyond 
 If a question is about Lit's personal info, projects, work history, or anything not in the provided knowledge, DO NOT guess, invent, or assume – immediately redirect to email dangnh799@gmail.com with a chill reply like "Bro, chi tiết này mình chưa public hết, email mình để mình kể nha 😏".
 Never make up stories, timelines, or details about Lit – it's a hard rule.
 
+[TIME & LOGIC - STRICT]
+- Lit's Birthday: 1999-09-07.
+- Age Calculation Rule: 
+  1. Lấy ngày tháng hiện tại từ [REAL-TIME CONTEXT] để so sánh. 
+  2. Nếu chưa đến ngày 07/09 của năm hiện tại -> Tuổi = (Năm hiện tại - 1999 - 1). 
+  3. Nếu đã qua hoặc đúng ngày 07/09 -> Tuổi = (Năm hiện tại - 1999).
+- Trả lời tự nhiên: Ví dụ đang là tháng 5/2026 thì vẫn trả lời là 26 tuổi, nhưng nếu là tháng 10/2026 thì phải nói là 27 tuổi rồi nha.
+
 [EXAMPLES]
 User: hello
 Lit: Lô. Dạo Portfolio tui có thấy bug gì không đấy? 😏
@@ -99,8 +107,33 @@ Website tech stack: Next.js App Router, Tailwind, TypeScript, Vercel hosting, Gr
 // Regex to detect when to add knowledge
 const knowledgeKeywords = /freelance|remote|contact|email|github|linkedin|facebook|portfolio|project|projects|dự án|dự án của bạn|project của bạn|dự án là gì|dự án đã làm|công việc|làm gì|đã làm|stack|tech|conductify|salestify|open.?source|lit|hải đăng|birthday|sinh nhật|tuổi|age|location|vị trí|học|education|trường|university|skill|kỹ năng|javascript|react|next.js|node|ai|devops|website|about|bio|về bản thân|về bạn|portfolio|open source/i;
 
+function getTimeContext(): string {
+  const now = new Date();
+  try {
+    const timeOptions: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Ho_Chi_Minh' };
+    const currentDate = now.toLocaleDateString('vi-VN', {
+      ...timeOptions,
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const currentTime = now.toLocaleTimeString('vi-VN', {
+      ...timeOptions,
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    return `[REAL-TIME CONTEXT]\nToday is ${currentDate}, current time is ${currentTime}.`;
+  } catch {
+    // Fallback if timeZone/locale unsupported (e.g. Edge runtime)
+    const date = now.toISOString().slice(0, 10);
+    const time = now.toISOString().slice(11, 16);
+    return `[REAL-TIME CONTEXT]\nToday is ${date}, current time is ${time} (UTC).`;
+  }
+}
+
 export async function POST(req: Request) {
   try {
+    const timeContext = getTimeContext();
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey || apiKey.trim() === '') {
       console.error('❌ GROQ_API_KEY is not configured');
@@ -144,9 +177,11 @@ export async function POST(req: Request) {
 
     const needsKnowledge = knowledgeKeywords.test(lastTwoUserTexts);
 
-    const systemPrompt = needsKnowledge
-      ? coreSystemPrompt + "\n\n[KNOWLEDGE BASE – only use when relevant]\n" + knowledgeBase
-      : coreSystemPrompt;
+    const systemPrompt = [
+      timeContext,
+      coreSystemPrompt,
+      needsKnowledge ? `[KNOWLEDGE BASE – only use when relevant]\n${knowledgeBase}` : ""
+    ].filter(Boolean).join("\n\n");
     
     const result = streamText({
       model: groq('llama-3.3-70b-versatile'),
@@ -154,7 +189,7 @@ export async function POST(req: Request) {
       messages: recentMessages,
       temperature: 0.8,
       topP: 1,
-      maxOutputTokens: 180,
+      maxOutputTokens: 250,
       experimental_transform: smoothStream({
         delayInMs: 50,
         chunking: 'word',
