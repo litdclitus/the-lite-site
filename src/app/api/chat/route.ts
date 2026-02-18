@@ -35,7 +35,6 @@ Never make up stories, timelines, or details about Lit – it's a hard rule.
 
 [TIME & LOGIC - STRICT]
 - Lit's Birthday: 1999-09-07.
-- Mệnh: Thành Đầu Thổ (Mệnh Thổ).
 - Age Calculation Rule: 
   1. Lấy ngày tháng hiện tại từ [REAL-TIME CONTEXT] để so sánh. 
   2. Nếu chưa đến ngày 07/09 của năm hiện tại -> Tuổi = (Năm hiện tại - 1999 - 1). 
@@ -108,20 +107,33 @@ Website tech stack: Next.js App Router, Tailwind, TypeScript, Vercel hosting, Gr
 // Regex to detect when to add knowledge
 const knowledgeKeywords = /freelance|remote|contact|email|github|linkedin|facebook|portfolio|project|projects|dự án|dự án của bạn|project của bạn|dự án là gì|dự án đã làm|công việc|làm gì|đã làm|stack|tech|conductify|salestify|open.?source|lit|hải đăng|birthday|sinh nhật|tuổi|age|location|vị trí|học|education|trường|university|skill|kỹ năng|javascript|react|next.js|node|ai|devops|website|about|bio|về bản thân|về bạn|portfolio|open source/i;
 
-export async function POST(req: Request) {
+function getTimeContext(): string {
   const now = new Date();
-  const timeOptions: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Ho_Chi_Minh' };
-  
-  const currentDate = now.toLocaleDateString('vi-VN', { 
-    ...timeOptions, day: '2-digit', month: '2-digit', year: 'numeric' 
-  });
-  const currentTime = now.toLocaleTimeString('vi-VN', { 
-    ...timeOptions, hour: '2-digit', minute: '2-digit' 
-  });
-
-  const timeContext = `[REAL-TIME CONTEXT]\nToday is ${currentDate}, current time is ${currentTime}.`;
-
   try {
+    const timeOptions: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Ho_Chi_Minh' };
+    const currentDate = now.toLocaleDateString('vi-VN', {
+      ...timeOptions,
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const currentTime = now.toLocaleTimeString('vi-VN', {
+      ...timeOptions,
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    return `[REAL-TIME CONTEXT]\nToday is ${currentDate}, current time is ${currentTime}.`;
+  } catch {
+    // Fallback if timeZone/locale unsupported (e.g. Edge runtime)
+    const date = now.toISOString().slice(0, 10);
+    const time = now.toISOString().slice(11, 16);
+    return `[REAL-TIME CONTEXT]\nToday is ${date}, current time is ${time} (UTC).`;
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const timeContext = getTimeContext();
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey || apiKey.trim() === '') {
       console.error('❌ GROQ_API_KEY is not configured');
