@@ -1,4 +1,4 @@
-# The Lit Site
+# The Lit Site 2
 
 A modern personal website and blog built with Next.js, featuring a portfolio section, blog with MDX support, and Spotify integration.
 
