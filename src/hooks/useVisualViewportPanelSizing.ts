@@ -28,8 +28,7 @@ export function useVisualViewportPanelSizing({
     const vv = window.visualViewport
 
     const apply = () => {
-      const target = panelRef.current
-      if (!target) return
+      const target = el
 
       const height = clampHeight(vv ? vv.height : window.innerHeight)
       const top = Math.round(vv ? vv.offsetTop : 0)
@@ -65,11 +64,8 @@ export function useVisualViewportPanelSizing({
       window.removeEventListener('orientationchange', onVVChange)
 
       // cleanup to avoid affecting desktop/docked closed state
-      const target = panelRef.current
-      if (target) {
-        target.style.height = ''
-        target.style.top = ''
-      }
+      el.style.height = ''
+      el.style.top = ''
     }
   }, [enabled, panelRef])
 }

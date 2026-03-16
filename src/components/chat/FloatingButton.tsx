@@ -6,7 +6,7 @@ export default function FloatingButton({ onClick }: FloatingButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="fixed right-6 bottom-6 z-40 flex h-14 w-14 items-center justify-center rounded-full border border-[#3A3A3C] bg-[#2C2C2E] text-white shadow-[0_8px_30px_rgba(0,0,0,0.2)] transition-transform duration-200 hover:scale-110 active:scale-95 md:hidden dark:bg-[#252527]"
+      className="fixed right-6 bottom-6 z-40 flex h-14 w-14 items-center justify-center rounded-full border border-[var(--color-floating-button-border)] bg-[var(--color-floating-button-bg)] text-white shadow-[0_8px_30px_rgba(0,0,0,0.2)] transition-transform duration-200 hover:scale-110 active:scale-95 md:hidden"
       aria-label="Open chat"
     >
       <svg
