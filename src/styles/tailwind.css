@@ -43,3 +43,99 @@
   --text-9xl: 8rem;
   --text-9xl--line-height: 1;
 }
+
+@layer base {
+  :root {
+    --color-accent-primary: #14b8a6;
+    --color-accent-primary-hover: #0d9488;
+
+    --color-app-bg: #fafafa;
+
+    --color-btn-primary-bg: #27272a;
+    --color-btn-primary-bg-hover: #3f3f46;
+    --color-btn-primary-bg-active: #27272a;
+    --color-btn-primary-text: #f4f4f5;
+
+    --color-btn-secondary-bg: #fafafa;
+    --color-btn-secondary-bg-hover: #f4f4f5;
+    --color-btn-secondary-bg-active: #f4f4f5;
+    --color-btn-secondary-text: #18181b;
+
+    --color-card-link-hover-bg: #fafafa;
+
+    --color-chat-panel-bg: rgb(255 255 255 / 0.98);
+    --color-chat-panel-bg-md: #f9fafb;
+    --color-chat-header-bg: rgb(255 255 255 / 0.9);
+    --color-chat-header-bg-md: rgb(255 255 255 / 0.8);
+    --color-chat-title: #2c2c2e;
+    --color-chat-muted: #6b6b6b;
+
+    --color-chat-input-text: #18181b;
+    --color-chat-input-bg: rgb(255 255 255 / 0.9);
+    --color-chat-input-placeholder: #a1a1aa;
+
+    --color-chat-send-bg: #111827;
+    --color-chat-send-bg-hover: #020617;
+    --color-chat-send-text: #ffffff;
+
+    --color-chat-user-bubble-bg: #27272a;
+    --color-chat-user-bubble-text: #ffffff;
+    --color-chat-assistant-bubble-bg: rgb(255 255 255 / 0.9);
+    --color-chat-assistant-bubble-text: #18181b;
+    --color-chat-loading-bg: #ffffff;
+    --color-chat-loading-border: #e5e4e2;
+    --color-chat-loading-dot: #9b9b9b;
+
+    --color-floating-chat-text: #18181b;
+    --color-floating-chat-placeholder: #71717a;
+    --color-floating-chat-send-bg: #f4f4f5;
+    --color-floating-chat-send-text: #52525b;
+    --color-floating-button-border: #3a3a3c;
+    --color-floating-button-bg: #2c2c2e;
+  }
+
+  .dark {
+    --color-app-bg: #000000;
+
+    --color-btn-primary-bg: #3f3f46;
+    --color-btn-primary-bg-hover: #52525b;
+    --color-btn-primary-bg-active: #3f3f46;
+    --color-btn-primary-text: #f4f4f5;
+
+    --color-btn-secondary-bg: rgb(39 39 42 / 0.5);
+    --color-btn-secondary-bg-hover: #27272a;
+    --color-btn-secondary-bg-active: rgb(39 39 42 / 0.5);
+    --color-btn-secondary-text: #d4d4d8;
+
+    --color-card-link-hover-bg: rgb(39 39 42 / 0.5);
+
+    --color-chat-panel-bg: rgb(9 9 11 / 0.99);
+    --color-chat-panel-bg-md: rgb(2 6 23 / 0.8);
+    --color-chat-header-bg: rgb(9 9 11 / 0.88);
+    --color-chat-header-bg-md: rgb(2 6 23 / 0.8);
+    --color-chat-title: #e5e4e2;
+    --color-chat-muted: #9b9b9b;
+
+    --color-chat-input-text: #f4f4f5;
+    --color-chat-input-bg: rgb(24 24 27 / 0.9);
+    --color-chat-input-placeholder: #71717a;
+
+    --color-chat-send-bg: #e5e4e2;
+    --color-chat-send-bg-hover: #d4d3d1;
+    --color-chat-send-text: #020617;
+
+    --color-chat-user-bubble-bg: #27272a;
+    --color-chat-user-bubble-text: #ffffff;
+    --color-chat-assistant-bubble-bg: rgb(24 24 27 / 0.9);
+    --color-chat-assistant-bubble-text: #e5e4e2;
+    --color-chat-loading-bg: #252527;
+    --color-chat-loading-border: #3a3a3c;
+    --color-chat-loading-dot: #9b9b9b;
+
+    --color-floating-chat-text: #e5e4e2;
+    --color-floating-chat-placeholder: #9b9b9b;
+    --color-floating-chat-send-bg: rgb(255 255 255 / 0.1);
+    --color-floating-chat-send-text: #e5e4e2;
+    --color-floating-button-bg: #252527;
+  }
+}

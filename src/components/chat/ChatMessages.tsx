@@ -1,5 +1,6 @@
 import type { UIMessage } from '@ai-sdk/react'
 import MessageContent from '@/components/MessageContent'
+import { chatPatterns, commonPatterns } from '@/styles/class-patterns'
 import { extractMessageText } from '@/utils/messageUtils'
 
 interface ChatMessagesProps {
@@ -28,7 +29,9 @@ export default function ChatMessages({
             {/* User Message */}
             {m.role === 'user' && (
               <div className="flex justify-end">
-                <div className="max-w-[85%] rounded-[16px] rounded-tr-md bg-[#27272A] px-3 py-2 text-[14px] leading-relaxed text-white shadow-sm md:max-w-[80%] md:rounded-[20px] md:px-4 md:py-2.5 md:text-[15px] dark:bg-[#27272A]">
+                <div
+                  className={`max-w-[85%] ${chatPatterns.bubbleUserRadius} ${chatPatterns.bubbleText} bg-[var(--color-chat-user-bubble-bg)] text-[var(--color-chat-user-bubble-text)] shadow-sm md:max-w-[80%]`}
+                >
                   <MessageContent content={text} role="user" />
                 </div>
               </div>
@@ -37,7 +40,9 @@ export default function ChatMessages({
             {/* AI Message */}
             {m.role === 'assistant' && (
               <div className="flex justify-start">
-                <div className="max-w-[90%] rounded-[16px] rounded-tl-md bg-white/90 px-3 py-2 text-[14px] leading-relaxed text-[#18181B] shadow-sm ring-1 ring-zinc-200/70 md:max-w-[85%] md:rounded-[20px] md:px-4 md:py-2.5 md:text-[15px] dark:bg-[#18181B]/90 dark:text-[#E5E4E2] dark:ring-zinc-800/80">
+                <div
+                  className={`max-w-[90%] ${chatPatterns.bubbleAssistantRadius} ${chatPatterns.bubbleText} ${commonPatterns.subtleRing} bg-[var(--color-chat-assistant-bubble-bg)] text-[var(--color-chat-assistant-bubble-text)] shadow-sm md:max-w-[85%]`}
+                >
                   <MessageContent content={text} role="assistant" />
                 </div>
               </div>
@@ -49,18 +54,20 @@ export default function ChatMessages({
       {/* Loading Indicator */}
       {isLoading && (
         <div className="flex justify-start">
-          <div className="rounded-[16px] rounded-tl-md border border-[#E5E4E2] bg-white px-3 py-2 md:rounded-[20px] md:px-4 md:py-3 dark:border-[#3A3A3C] dark:bg-[#252527]">
+          <div
+            className={`${chatPatterns.bubbleLoadingRadius} border border-[var(--color-chat-loading-border)] bg-[var(--color-chat-loading-bg)] px-3 py-2 md:px-4 md:py-3`}
+          >
             <div className="flex gap-1.5">
               <span
-                className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9B9B9B] md:h-2 md:w-2"
+                className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--color-chat-loading-dot)] md:h-2 md:w-2"
                 style={{ animationDelay: '0ms' }}
               />
               <span
-                className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9B9B9B] md:h-2 md:w-2"
+                className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--color-chat-loading-dot)] md:h-2 md:w-2"
                 style={{ animationDelay: '150ms' }}
               />
               <span
-                className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9B9B9B] md:h-2 md:w-2"
+                className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--color-chat-loading-dot)] md:h-2 md:w-2"
                 style={{ animationDelay: '300ms' }}
               />
             </div>

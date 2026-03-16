@@ -1,3 +1,5 @@
+import { commonPatterns } from '@/styles/class-patterns'
+
 interface ChatInputProps {
   input: string
   setInput: (value: string) => void
@@ -27,7 +29,7 @@ export default function ChatInput({
   return (
     <form
       onSubmit={onSubmit}
-      className="shrink-0 border-t border-zinc-200/70 bg-white/70 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-2xl md:bg-white/80 md:p-5 md:backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/70 md:dark:bg-[#020617]/80"
+      className={`shrink-0 border-t ${commonPatterns.subtleBorder} ${commonPatterns.glassBlur} bg-white/70 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:bg-[var(--color-chat-header-bg-md)] md:p-5`}
     >
       <div className="flex items-center gap-1.5 md:gap-2">
         <div className="relative flex-1">
@@ -39,14 +41,14 @@ export default function ChatInput({
             placeholder="Type a message..."
             disabled={isLoading || isRateLimited}
             rows={1}
-            className="w-full resize-none overflow-hidden rounded-xl border border-zinc-200/70 bg-white/90 px-3 py-2 text-sm leading-relaxed text-[#18181B] shadow-sm transition-colors placeholder:text-zinc-400 md:rounded-2xl md:px-4 md:py-3 md:text-base focus:border-zinc-500 focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:border-[#3A3A3C] dark:bg-[#18181B]/90 dark:text-[#F4F4F5] dark:placeholder:text-[#71717A]"
+            className={`w-full resize-none overflow-hidden rounded-xl border ${commonPatterns.subtleBorder} bg-[var(--color-chat-input-bg)] px-3 py-2 text-sm leading-relaxed text-[var(--color-chat-input-text)] shadow-sm ${commonPatterns.transitionColors} placeholder:text-[var(--color-chat-input-placeholder)] md:rounded-2xl md:px-4 md:py-3 md:text-base focus:border-zinc-500 focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60`}
           />
         </div>
         <button
           type="submit"
           disabled={!canSend}
-          className={`mb-0.5 shrink-0 rounded-full bg-[#111827] p-2 text-sm font-medium text-white shadow-sm transition-colors md:p-2.5 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#E5E4E2] dark:text-[#020617] ${
-            canSend ? 'hover:bg-[#020617] dark:hover:bg-[#D4D3D1]' : ''
+          className={`mb-0.5 shrink-0 rounded-full bg-[var(--color-chat-send-bg)] p-2 text-sm font-medium text-[var(--color-chat-send-text)] shadow-sm transition-colors md:p-2.5 disabled:cursor-not-allowed disabled:opacity-40 ${
+            canSend ? 'hover:bg-[var(--color-chat-send-bg-hover)]' : ''
           }`}
           aria-label="Send message"
         >

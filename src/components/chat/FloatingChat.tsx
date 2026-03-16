@@ -46,10 +46,10 @@ export default function FloatingChat({
           }}
           className={`flex items-center gap-3 rounded-[18px] border px-4 transition-all duration-250 ${
             isFloatingExpanded
-              ? 'border-zinc-300 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.14)] dark:border-[#4A4A4C] dark:bg-[#18181B] dark:shadow-[0_10px_40px_rgba(0,0,0,0.7)]'
+              ? 'border-zinc-300 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.14)] dark:border-zinc-600 dark:bg-[var(--color-chat-input-bg)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.7)]'
               : hasScrolledAndStopped
-                ? 'border-zinc-300 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:border-[#3A3A3C] dark:bg-[#18181B] dark:shadow-[0_4px_20px_rgba(0,0,0,0.6)]'
-                : 'border-zinc-200 bg-white/95 shadow-[0_2px_12px_rgba(0,0,0,0.08)] dark:border-[#27272A] dark:bg-[#18181B]/95 dark:shadow-[0_2px_12px_rgba(0,0,0,0.6)]'
+                ? 'border-zinc-300 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:border-[var(--color-floating-button-border)] dark:bg-[var(--color-chat-input-bg)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.6)]'
+                : 'border-zinc-200 bg-white/95 shadow-[0_2px_12px_rgba(0,0,0,0.08)] dark:border-zinc-800 dark:bg-[var(--color-chat-input-bg)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.6)]'
           }`}
         >
           <input
@@ -72,7 +72,7 @@ export default function FloatingChat({
             onBlur={() => setIsFloatingExpanded(false)}
             placeholder="Ask a question..."
             disabled={isLoading || isRateLimited}
-            className="flex-1 border-0 bg-transparent text-base text-zinc-900 outline-none placeholder:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-[#E5E4E2] dark:placeholder:text-[#9B9B9B]"
+            className="flex-1 border-0 bg-transparent text-base text-[var(--color-floating-chat-text)] outline-none placeholder:text-[var(--color-floating-chat-placeholder)] disabled:cursor-not-allowed disabled:opacity-50"
           />
           {isRateLimited ? (
             <div className="shrink-0 text-xs text-amber-500 dark:text-amber-400">
@@ -82,9 +82,9 @@ export default function FloatingChat({
             <button
               type="submit"
               disabled={!canSend}
-              className={`shrink-0 rounded-full bg-zinc-100 p-1.5 text-zinc-600 transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white/10 dark:text-[#E5E4E2] ${
+              className={`shrink-0 rounded-full bg-[var(--color-floating-chat-send-bg)] p-1.5 text-[var(--color-floating-chat-send-text)] transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
                 canSend
-                  ? 'hover:bg-teal-500 hover:text-white dark:hover:bg-teal-500 dark:hover:text-white'
+                  ? 'hover:bg-[var(--color-accent-primary)] hover:text-white'
                   : ''
               }`}
               aria-label="Send"
