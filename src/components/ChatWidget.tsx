@@ -25,6 +25,7 @@ export default function ChatWidget() {
     canSend,
     handleSubmit,
     messagesEndRef,
+    sendMessageDirect,
   } = useChatLogic({
     textareaRef,
     onPanelOpen: () => setIsDocked(true),
@@ -54,6 +55,10 @@ export default function ChatWidget() {
 
   const handleClose = () => setIsDocked(false)
 
+  const handleSendMessage = (message: string) => {
+    sendMessageDirect(message)
+  }
+
   return (
     <>
       {/* Backdrop Overlay - Mobile ONLY */}
@@ -77,6 +82,7 @@ export default function ChatWidget() {
         onSubmit={handleSubmit}
         textareaRef={textareaRef}
         canSend={canSend}
+        onSendMessage={handleSendMessage}
       />
 
       {/* Floating Input Card - Desktop only */}

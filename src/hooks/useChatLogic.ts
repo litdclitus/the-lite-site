@@ -133,6 +133,28 @@ export function useChatLogic({ textareaRef, onPanelOpen }: UseChatLogicProps) {
     }
   }
 
+  // Direct message send function for programmatic use
+  const sendMessageDirect = async (messageText: string) => {
+    if (isLoading || isRateLimited) return
+
+    const userInput = messageText.trim()
+    if (!userInput) return
+
+    setInput('')
+    
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+    }
+
+    onPanelOpen() // Transition to docked mode
+
+    try {
+      await sendMessage({ text: userInput })
+    } catch (err) {
+      console.error('Send error:', err)
+    }
+  }
+
   return {
     input,
     setInput,
@@ -142,5 +164,6 @@ export function useChatLogic({ textareaRef, onPanelOpen }: UseChatLogicProps) {
     canSend,
     handleSubmit,
     messagesEndRef,
+    sendMessageDirect,
   }
 }
