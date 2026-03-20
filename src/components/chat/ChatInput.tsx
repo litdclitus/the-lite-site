@@ -29,31 +29,36 @@ export default function ChatInput({
   return (
     <form
       onSubmit={onSubmit}
-      className={`shrink-0 border-t ${commonPatterns.subtleBorder} ${commonPatterns.glassBlur} bg-white/70 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:bg-[var(--color-chat-header-bg-md)] md:p-5`}
+      className={`shrink-0 border-t ${commonPatterns.subtleBorder} bg-white/80 px-4 py-3 backdrop-blur ${commonPatterns.transitionColors} md:px-5 md:py-3.5 md:bg-white/85 dark:bg-zinc-900/75`}
     >
-      <div className="flex items-center gap-1.5 md:gap-2">
+      <div className="flex items-end gap-2.5 md:gap-3">
+        {/* Input Field */}
         <div className="relative flex-1">
           <textarea
             ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
+            placeholder="Ask me anything..."
             disabled={isLoading || isRateLimited}
             rows={1}
-            className={`w-full resize-none overflow-hidden rounded-xl border ${commonPatterns.subtleBorder} bg-[var(--color-chat-input-bg)] px-3 py-2 text-sm leading-relaxed text-[var(--color-chat-input-text)] shadow-sm ${commonPatterns.transitionColors} placeholder:text-[var(--color-chat-input-placeholder)] md:rounded-2xl md:px-4 md:py-3 md:text-base focus:border-zinc-500 focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60`}
+            className={`max-h-40 w-full resize-none overflow-hidden rounded-2xl border border-zinc-200/70 bg-white px-4 py-2.5 text-[15px] leading-relaxed text-zinc-900 shadow-[0_1px_10px_rgba(0,0,0,0.04)] ${commonPatterns.transitionColors} placeholder:text-zinc-400 md:text-[15px] focus:border-zinc-300 focus:shadow-[0_2px_14px_rgba(0,0,0,0.07)] focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700/80 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:shadow-none dark:focus:border-zinc-600`}
           />
         </div>
+
+        {/* Send Button */}
         <button
           type="submit"
           disabled={!canSend}
-          className={`mb-0.5 shrink-0 rounded-full bg-[var(--color-chat-send-bg)] p-2 text-sm font-medium text-[var(--color-chat-send-text)] shadow-sm transition-colors md:p-2.5 disabled:cursor-not-allowed disabled:opacity-40 ${
-            canSend ? 'hover:bg-[var(--color-chat-send-bg-hover)]' : ''
+          className={`mb-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
+            canSend
+              ? 'bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600'
+              : 'bg-zinc-100 dark:bg-zinc-800'
           }`}
           aria-label="Send message"
         >
           <svg
-            className="h-3.5 w-3.5 md:h-4 md:w-4"
+            className="h-4 w-4 md:h-5 md:w-5"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -63,7 +68,7 @@ export default function ChatInput({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+              d="M13 5l7 7m0 0l-7 7m7-7H3"
             />
           </svg>
         </button>
