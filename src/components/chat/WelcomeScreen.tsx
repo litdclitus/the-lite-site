@@ -19,32 +19,9 @@ const starterQuestions = [
 
 export default function WelcomeScreen({ onQuestionClick }: WelcomeScreenProps) {
   return (
-    <div className="flex h-full flex-col items-center justify-center px-4 py-6 md:py-8">
-      {/* Robot Illustration Placeholder */}
-      <div className="mb-6 md:mb-8">
-        <div className="mx-auto flex h-32 w-32 items-center justify-center md:h-40 md:w-40">
-          {/* Placeholder for robot illustration */}
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/20 dark:to-blue-900/20">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="h-16 w-16 text-[var(--color-accent-primary)] md:h-20 md:w-20"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
+    <div className="flex h-full flex-col items-center justify-between px-4 py-6 md:py-8">
       {/* Welcome Message */}
-      <div className="mb-8 text-center md:mb-12">
+      <div className="mt-6 text-center md:mt-20">
         {/* Heading with emoji */}
         <h2 className="mb-3 text-xl font-bold text-[var(--color-accent-primary)] md:text-2xl">
           Yo, I&apos;m Lit Bot 👋
@@ -52,13 +29,13 @@ export default function WelcomeScreen({ onQuestionClick }: WelcomeScreenProps) {
 
         {/* Subtitle */}
         <p className="max-w-[339px] text-sm leading-relaxed text-[var(--color-chat-muted)] md:text-base">
-          My human is busy squashing bugs. Ask me quick—I need to go brew some
+          My human is busy squashing bugs. Ask me quick — I need to go brew some
           Phin coffee.
         </p>
       </div>
 
       {/* Starter Questions - Horizontal scrollable on mobile, flexible width */}
-      <div className="flex w-full gap-3 overflow-x-auto px-4 pb-2 md:flex-col md:items-center md:justify-center md:overflow-visible md:px-0">
+      <div className="flex w-full gap-3 overflow-x-auto px-4 pb-0 md:flex-col md:items-center md:justify-center md:overflow-visible md:px-0">
         {starterQuestions.map((item) => (
           <button
             key={item.id}

@@ -30,6 +30,14 @@ const markdownComponents = {
     </p>
   ),
   // Code inline
+  pre: ({ node, children, ...props }: any) => (
+    <pre
+      className="mb-2 max-w-full overflow-x-auto rounded-lg bg-zinc-100 p-3 text-sm text-zinc-800 last:mb-0 dark:bg-zinc-800 dark:text-zinc-200"
+      {...props}
+    >
+      {children}
+    </pre>
+  ),
   code: ({ node, inline, children, ...props }: any) =>
     inline ? (
       <code
@@ -39,10 +47,7 @@ const markdownComponents = {
         {children}
       </code>
     ) : (
-      <code
-        className="block rounded-lg bg-zinc-100 p-3 text-sm text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
-        {...props}
-      >
+      <code className="font-mono text-sm" {...props}>
         {children}
       </code>
     ),
@@ -71,7 +76,7 @@ const markdownComponents = {
 }
 
 const MessageContent = memo(({ content, role }: MessageContentProps) => {
-  // Memoize the markdown rendering to prevent unnecessary re-renders
+  // Keep markdown rendering consistent for both streaming and completed messages.
   const renderedContent = useMemo(
     () => (
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
@@ -81,7 +86,7 @@ const MessageContent = memo(({ content, role }: MessageContentProps) => {
     [content]
   )
 
-  return <div className="wrap-break-word">{renderedContent}</div>
+  return <div className="min-w-0 break-words">{renderedContent}</div>
 })
 
 MessageContent.displayName = 'MessageContent'

@@ -29,9 +29,9 @@ export default function ChatInput({
   return (
     <form
       onSubmit={onSubmit}
-      className={`shrink-0 border-t ${commonPatterns.subtleBorder} bg-white/90 px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:bg-white/90 dark:bg-zinc-900/90`}
+      className={`shrink-0 border-t ${commonPatterns.subtleBorder} bg-white/80 px-4 py-3 backdrop-blur ${commonPatterns.transitionColors} md:px-5 md:py-3.5 md:bg-white/85 dark:bg-zinc-900/75`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-end gap-2.5 md:gap-3">
         {/* Input Field */}
         <div className="relative flex-1">
           <textarea
@@ -42,15 +42,15 @@ export default function ChatInput({
             placeholder="Ask me anything..."
             disabled={isLoading || isRateLimited}
             rows={1}
-            className={`w-full resize-none overflow-hidden rounded-[15px] border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm leading-relaxed text-zinc-900 ${commonPatterns.transitionColors} placeholder:text-zinc-400 md:text-base focus:border-zinc-300 focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500`}
+            className={`max-h-40 w-full resize-none overflow-hidden rounded-2xl border border-zinc-200/70 bg-white px-4 py-2.5 text-[15px] leading-relaxed text-zinc-900 shadow-[0_1px_10px_rgba(0,0,0,0.04)] ${commonPatterns.transitionColors} placeholder:text-zinc-400 md:text-[15px] focus:border-zinc-300 focus:shadow-[0_2px_14px_rgba(0,0,0,0.07)] focus:ring-0 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700/80 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:shadow-none dark:focus:border-zinc-600`}
           />
         </div>
 
-        {/* Send Button - RIGHT side, arrow style from Figma */}
+        {/* Send Button */}
         <button
           type="submit"
           disabled={!canSend}
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
+          className={`mb-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
             canSend
               ? 'bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600'
               : 'bg-zinc-100 dark:bg-zinc-800'
@@ -58,7 +58,7 @@ export default function ChatInput({
           aria-label="Send message"
         >
           <svg
-            className="h-5 w-5 text-zinc-600 dark:text-zinc-300"
+            className="h-4 w-4 md:h-5 md:w-5"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

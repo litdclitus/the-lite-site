@@ -2,6 +2,7 @@ import type { UIMessage } from '@ai-sdk/react'
 import { useRef } from 'react'
 import ChatMessages from './ChatMessages'
 import ChatInput from './ChatInput'
+import ChatAvatar from './ChatAvatar'
 import { useVisualViewportPanelSizing } from '@/hooks/useVisualViewportPanelSizing'
 import { chatPatterns, commonPatterns } from '@/styles/class-patterns'
 
@@ -45,7 +46,7 @@ export default function ChatPanel({
   return (
     <div
       ref={panelRef}
-      className={`fixed top-0 right-0 z-[9999] flex h-screen min-h-0 w-full flex-col overflow-hidden rounded-none border-l border-zinc-200 bg-white shadow-2xl ${chatPatterns.panelTransition} md:w-[min(420px,30vw)] md:rounded-t-[40px] dark:border-zinc-800 dark:bg-zinc-950 ${
+      className={`fixed top-0 right-0 z-[9999] flex h-screen min-h-0 w-full flex-col overflow-hidden rounded-none border-l border-zinc-200 bg-white shadow-2xl ${chatPatterns.panelTransition} md:w-[min(480px,32vw)] md:rounded-t-[40px] dark:border-zinc-800 dark:bg-zinc-950 ${
         isDocked ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
@@ -54,23 +55,8 @@ export default function ChatPanel({
         className={`flex shrink-0 items-center justify-between border-b border-zinc-200 bg-white/95 px-5 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] md:pt-3 dark:border-zinc-800 dark:bg-zinc-900/95`}
       >
         <div className="flex items-center gap-3">
-          {/* Avatar Placeholder */}
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#dbd1fc]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              className="h-6 w-6 text-zinc-700"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-              />
-            </svg>
-          </div>
+          {/* Avatar */}
+          <ChatAvatar size="md" />
 
           {/* Title and Subtitle */}
           <div className="flex flex-col">
@@ -126,8 +112,8 @@ export default function ChatPanel({
       />
 
       {/* Footer - Powered by text */}
-      <div className="shrink-0 border-t border-zinc-200 bg-white/80 py-2 text-center dark:border-zinc-800 dark:bg-zinc-900/80">
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+      <div className="shrink-0 border-t border-zinc-200 bg-white/80 py-1 text-center dark:border-zinc-800 dark:bg-zinc-900/80">
+        <p className="text-xxs text-zinc-500 dark:text-zinc-400">
           Powered by{' '}
           <span className="font-medium text-zinc-900 dark:text-zinc-100">
             litdclitus

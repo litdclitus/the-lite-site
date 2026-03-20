@@ -1,7 +1,7 @@
 import type { UIMessage } from '@ai-sdk/react'
 import MessageContent from '@/components/MessageContent'
-import { chatPatterns, commonPatterns } from '@/styles/class-patterns'
 import { extractMessageText } from '@/utils/messageUtils'
+import ChatAvatar from './ChatAvatar'
 import WelcomeScreen from './WelcomeScreen'
 
 interface ChatMessagesProps {
@@ -19,6 +19,12 @@ export default function ChatMessages({
   messagesEndRef,
   onSendMessage,
 }: ChatMessagesProps) {
+  const lastMessage = messages[messages.length - 1]
+  const lastAssistantText =
+    lastMessage?.role === 'assistant' ? extractMessageText(lastMessage).trim() : ''
+  const showTypingIndicator =
+    isLoading && (!lastMessage || lastMessage.role !== 'assistant' || !lastAssistantText)
+
   // Show welcome screen when no messages
   if (messages.length === 0 && !isLoading) {
     return (
@@ -44,6 +50,13 @@ export default function ChatMessages({
     >
       {messages.map((m, idx) => {
         const text = extractMessageText(m)
+        const isLastMessage = idx === messages.length - 1
+        const isStreamingAssistant =
+          isLoading && isLastMessage && m.role === 'assistant'
+
+        if (isStreamingAssistant && !text.trim()) {
+          return null
+        }
 
         return (
           <div key={m.id || idx} className="relative z-10 space-y-2">
@@ -51,7 +64,7 @@ export default function ChatMessages({
             {m.role === 'user' && (
               <div className="flex items-end justify-end">
                 {/* Message Bubble - Flat rounded style */}
-                <div className="max-w-[85%] rounded-[15px] rounded-br-[10px] bg-[var(--color-accent-primary)] px-4 py-2 text-[14px] leading-relaxed text-white shadow-sm md:max-w-[80%] md:text-[15px]">
+                <div className="max-w-[85%] rounded-[15px] rounded-br-[0px] bg-[var(--color-accent-primary)] px-4 py-2 text-[14px] leading-relaxed text-white shadow-sm md:max-w-[80%] md:text-[15px]">
                   <MessageContent content={text} role="user" />
                 </div>
               </div>
@@ -60,26 +73,11 @@ export default function ChatMessages({
             {/* AI Message */}
             {m.role === 'assistant' && (
               <div className="flex items-end justify-start gap-2">
-                {/* Bot Avatar - Small circular with logo */}
-                <div className="mb-0.5 hidden h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-primary)] shadow-sm md:flex">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="white"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="white"
-                    className="h-3.5 w-3.5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"
-                    />
-                  </svg>
-                </div>
+                {/* Bot Avatar */}
+                <ChatAvatar size="sm" className="mb-0.5" />
 
                 {/* Message Bubble - Light gray with border */}
-                <div className="max-w-[90%] rounded-[15px] rounded-bl-[10px] border border-zinc-200 bg-[rgba(174,174,174,0.12)] px-4 py-2 text-[14px] leading-relaxed text-[var(--color-chat-assistant-bubble-text)] shadow-sm md:max-w-[85%] md:text-[15px] dark:border-zinc-700 dark:bg-[rgba(60,60,60,0.3)]">
+                <div className="max-w-[90%] rounded-[15px] rounded-bl-[0px] border border-zinc-200 bg-[rgba(174,174,174,0.12)] px-4 py-2 text-[14px] leading-relaxed text-[var(--color-chat-assistant-bubble-text)] shadow-sm md:max-w-[85%] md:text-[15px] dark:border-zinc-700 dark:bg-[rgba(60,60,60,0.3)]">
                   <MessageContent content={text} role="assistant" />
                 </div>
               </div>
@@ -89,10 +87,12 @@ export default function ChatMessages({
       })}
 
       {/* Loading Indicator */}
-      {isLoading && (
-        <div className="relative z-10 flex justify-start">
+      {showTypingIndicator && (
+        <div className="relative z-10 flex items-end justify-start gap-2">
+          <ChatAvatar size="sm" className="mb-0.5" />
+
           <div
-            className={`${chatPatterns.bubbleLoadingRadius} border border-[var(--color-chat-loading-border)] bg-[var(--color-chat-loading-bg)] px-3 py-2 md:px-4 md:py-3`}
+            className="rounded-[15px] rounded-bl-[4px] border border-[var(--color-chat-loading-border)] bg-[var(--color-chat-loading-bg)] px-3 py-2 md:px-4 md:py-3"
           >
             <div className="flex gap-1.5">
               <span
